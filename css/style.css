@@ -1,0 +1,167 @@
+/* =================================
+   NOUGHTS AND CROSSES
+   Main stylesheet
+   ================================= */
+
+/* General page styling */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #101426;
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Main game wrapper */
+
+.game-wrapper {
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+/* Game heading */
+
+.game-header {
+    margin-bottom: 35px;
+}
+
+    .game-header h1 {
+        font-size: 42px;
+        letter-spacing: 2px;
+        margin-bottom: 12px;
+        color: #ffffff;
+    }
+
+    .game-header p {
+        color: #a5aecb;
+        font-size: 16px;
+    }
+
+/* Game panel */
+
+.game-panel {
+    background: #1b2340;
+    padding: 35px;
+    border-radius: 18px;
+    border: 1px solid #303b61;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Game status */
+
+.game-info {
+    margin-bottom: 25px;
+}
+
+    .game-info h2 {
+        font-size: 20px;
+        color: #b8c5ff;
+    }
+
+/* Game board */
+
+.game-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+/* Individual cells */
+
+.cell {
+    aspect-ratio: 1 / 1;
+    background: #293456;
+    border: 2px solid #3d4b78;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 65px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+    .cell:hover {
+        background: #364570;
+        transform: scale(1.03);
+    }
+
+    /* Player symbols */
+
+    .cell.x {
+        color: #65c8ff;
+    }
+
+    .cell.o {
+        color: #ff85bd;
+    }
+
+/* Game controls */
+
+.game-controls {
+    margin-top: 30px;
+}
+
+#restartButton {
+    background: #7167f5;
+    color: #ffffff;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 9px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+    #restartButton:hover {
+        background: #8a81ff;
+        transform: translateY(-2px);
+    }
+
+/* Footer */
+
+footer {
+    margin-top: 25px;
+    color: #7f89a8;
+    font-size: 13px;
+}
+
+/* Responsive layout */
+
+@media (max-width: 500px) {
+
+    .game-header h1 {
+        font-size: 30px;
+    }
+
+    .game-panel {
+        padding: 20px;
+    }
+
+    .cell {
+        font-size: 48px;
+    }
+}
+/* Highlight the winning combination */
+.cell.winning-cell {
+    background-color: #16a34a;
+    border-color: #22c55e;
+    color: white;
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
