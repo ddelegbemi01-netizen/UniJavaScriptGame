@@ -8,6 +8,7 @@ let drawScore = 0;
 const xScoreDisplay = document.getElementById("xScore");
 const oScoreDisplay = document.getElementById("oScore");
 const drawScoreDisplay = document.getElementById("drawScore");
+const gameModeSelect = document.getElementById("gameMode");
 
 const statusDisplay = document.getElementById("status");
 
@@ -62,8 +63,16 @@ function handleCellClick(event) {
     handleCellPlayed(clickedCell, clickedCellIndex);
 
     handleResultValidation();
-}
 
+    // Allow the computer to play if the game is still active
+    if (
+        gameActive &&
+        gameModeSelect.value === "computer" &&
+        currentPlayer === "O"
+    ) {
+        setTimeout(handleComputerMove, 500);
+    }
+}
 
 // UPDATE GAME BOARD
 
@@ -175,13 +184,151 @@ function handleRestartGame() {
     });
 }
 
+// COMPUTER PLAYER
+
+// INTELLIGENT COMPUTER PLAYER
+
+function handleComputerMove() {
+
+    if (!gameActive || gameModeSelect.value !== "computer") {
+        return;
+    }
+
+    let computerMove = -1;
+
+    // 1. Check whether the computer can win
+    for (let condition of winningConditions) {
+
+        const [a, b, c] = condition;
+
+        if (
+            gameState[a] === "O" &&
+            gameState[b] === "O" &&
+            gameState[c] === ""
+        ) {
+            computerMove = c;
+            break;
+        }
+
+        if (
+            gameState[a] === "O" &&
+            gameState[c] === "O" &&
+            gameState[b] === ""
+        ) {
+            computerMove = b;
+            break;
+        }
+
+        if (
+            gameState[b] === "O" &&
+            gameState[c] === "O" &&
+            gameState[a] === ""
+        ) {
+            computerMove = a;
+            break;
+        }
+    }
+
+    // 2. Block the human player from winning
+    if (computerMove === -1) {
+
+        for (let condition of winningConditions) {
+
+            const [a, b, c] = condition;
+
+            if (
+                gameState[a] === "X" &&
+                gameState[b] === "X" &&
+                gameState[c] === ""
+            ) {
+                computerMove = c;
+                break;
+            }
+
+            if (
+                gameState[a] === "X" &&
+                gameState[c] === "X" &&
+                gameState[b] === ""
+            ) {
+                computerMove = b;
+                break;
+            }
+
+            if (
+                gameState[b] === "X" &&
+                gameState[c] === "X" &&
+                gameState[a] === ""
+            ) {
+                computerMove = a;
+                break;
+            }
+        }
+    }
+
+    // 3. Take the centre square if available
+    if (computerMove === -1 && gameState[4] === "") {
+        computerMove = 4;
+    }
+
+    // 4. Choose an available corner
+    if (computerMove === -1) {
+
+        const corners = [0, 2, 6, 8];
+
+        const availableCorners = corners.filter(function (index) {
+            return gameState[index] === "";
+        });
+
+        if (availableCorners.length > 0) {
+
+            computerMove = availableCorners[
+                Math.floor(Math.random() * availableCorners.length)
+            ];
+
+        }
+    }
+
+    // 5. Choose any remaining available square
+    if (computerMove === -1) {
+
+        const availableCells = [];
+
+        gameState.forEach(function (cell, index) {
+
+            if (cell === "") {
+                availableCells.push(index);
+            }
+
+        });
+
+        if (availableCells.length > 0) {
+
+            computerMove = availableCells[
+                Math.floor(Math.random() * availableCells.length)
+            ];
+
+        }
+    }
+
+    // Play the computer's move
+    if (computerMove !== -1) {
+
+        handleCellPlayed(cells[computerMove], computerMove);
+
+        handleResultValidation();
+
+    }
+}
 
 // EVENT LISTENERS
 
+// Listen for clicks on the game board
 cells.forEach(function (cell) {
-
     cell.addEventListener("click", handleCellClick);
-
 });
 
+// Listen for restart button clicks
 restartButton.addEventListener("click", handleRestartGame);
+
+// Reset the game when the game mode changes
+gameModeSelect.addEventListener("change", handleRestartGame);

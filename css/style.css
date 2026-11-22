@@ -1,167 +1,251 @@
-/* =================================
-   NOUGHTS AND CROSSES
-   Main stylesheet
-   ================================= */
+/* =====================================
+   CHRISTMAS NOUGHTS AND CROSSES
+===================================== */
 
-/* General page styling */
-
+/* Main page */
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #101426;
-    color: #ffffff;
+    margin: 0;
     min-height: 100vh;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #fff8e7;
+    background: radial-gradient(circle at 15% 20%, #24543e 0%, transparent 35%), radial-gradient(circle at 85% 80%, #641e2b 0%, transparent 35%), linear-gradient(135deg, #071f18, #102d23 50%, #081b16);
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 35px 15px;
 }
 
-/* Main game wrapper */
-
+/* Main wrapper */
 .game-wrapper {
     width: 100%;
-    max-width: 600px;
+    max-width: 750px;
     text-align: center;
+    position: relative;
 }
 
-/* Game heading */
-
+/* Christmas heading */
 .game-header {
-    margin-bottom: 35px;
+    margin-bottom: 28px;
 }
 
     .game-header h1 {
         font-size: 42px;
+        color: #f6d77a;
+        margin-bottom: 10px;
         letter-spacing: 2px;
-        margin-bottom: 12px;
-        color: #ffffff;
+        text-shadow: 0 0 18px rgba(246, 215, 122, 0.3);
     }
+
+        .game-header h1::before {
+            content: "🎄 ";
+        }
+
+        .game-header h1::after {
+            content: " 🎄";
+        }
 
     .game-header p {
-        color: #a5aecb;
+        color: #d8e9d8;
         font-size: 16px;
+        letter-spacing: 1px;
     }
 
-/* Game panel */
-
+/* Main game panel */
 .game-panel {
-    background: #1b2340;
-    padding: 35px;
-    border-radius: 18px;
-    border: 1px solid #303b61;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+    background: linear-gradient(145deg, #4a1925, #30121d);
+    border: 2px solid #c9a34e;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.45), inset 0 0 25px rgba(255, 215, 120, 0.05);
 }
 
 /* Game status */
-
-.game-info {
-    margin-bottom: 25px;
+.game-info h2 {
+    color: #f6d77a;
+    font-size: 23px;
+    margin-top: 0;
+    margin-bottom: 20px;
 }
 
-    .game-info h2 {
-        font-size: 20px;
-        color: #b8c5ff;
+/* Scoreboard */
+.scoreboard {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+    padding: 18px 10px;
+    background: #17382b;
+    border: 1px solid #c9a34e;
+    border-radius: 16px;
+}
+
+.score {
+    flex: 1;
+    text-align: center;
+}
+
+    .score h3 {
+        color: #f6d77a;
+        font-size: 15px;
+        margin: 0 0 8px;
+    }
+
+    .score p {
+        color: white;
+        font-size: 30px;
+        font-weight: bold;
+        margin: 0;
+    }
+
+/* Game mode selector */
+.game-mode {
+    margin: 22px 0;
+}
+
+    .game-mode label {
+        display: block;
+        margin-bottom: 10px;
+        color: #f6d77a;
+        font-weight: bold;
+    }
+
+    .game-mode select {
+        padding: 12px 18px;
+        border-radius: 10px;
+        border: 1px solid #d5b45b;
+        background: #17382b;
+        color: white;
+        font-size: 15px;
+        cursor: pointer;
     }
 
 /* Game board */
-
 .game-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    max-width: 420px;
-    margin: 0 auto;
+    max-width: 470px;
+    margin: 25px auto;
 }
 
 /* Individual cells */
-
 .cell {
     aspect-ratio: 1 / 1;
-    background: #293456;
-    border: 2px solid #3d4b78;
-    border-radius: 12px;
+    background: linear-gradient(145deg, #214b39, #153728);
+    border: 2px solid #b99443;
+    border-radius: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 65px;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
+    transition: all 0.25s ease;
+    color: white;
 }
 
     .cell:hover {
-        background: #364570;
-        transform: scale(1.03);
+        background: #315e46;
+        border-color: #f6d77a;
+        transform: translateY(-3px);
     }
 
-    /* Player symbols */
-
+    /* Player X */
     .cell.x {
-        color: #65c8ff;
+        color: #e85d67;
+        text-shadow: 0 0 15px rgba(232, 93, 103, 0.4);
     }
 
+    /* Player O */
     .cell.o {
-        color: #ff85bd;
+        color: #8bd8f2;
+        text-shadow: 0 0 15px rgba(139, 216, 242, 0.4);
     }
 
-/* Game controls */
+    /* Winning squares */
+    .cell.winning-cell {
+        background: linear-gradient(145deg, #d6ad4d, #987329);
+        border-color: #ffe49a;
+        color: #ffffff;
+        transform: scale(1.04);
+        box-shadow: 0 0 22px rgba(246, 215, 122, 0.55);
+    }
 
+/* Restart button */
 .game-controls {
-    margin-top: 30px;
+    margin-top: 25px;
 }
 
 #restartButton {
-    background: #7167f5;
-    color: #ffffff;
-    border: none;
-    padding: 14px 32px;
-    border-radius: 9px;
+    padding: 15px 35px;
+    border: 2px solid #f6d77a;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #b52c40, #7f182b);
+    color: white;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
     #restartButton:hover {
-        background: #8a81ff;
-        transform: translateY(-2px);
+        background: linear-gradient(135deg, #d33d51, #a51e34);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(246, 215, 122, 0.2);
     }
 
 /* Footer */
-
 footer {
     margin-top: 25px;
-    color: #7f89a8;
+    color: #c7d9c9;
     font-size: 13px;
 }
 
-/* Responsive layout */
+/* Snowfall decoration */
+.game-wrapper::before {
+    content: "❄  ✦  ❄  ✧  ❄  ✦  ❄";
+    display: block;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 19px;
+    letter-spacing: 12px;
+    margin-bottom: 15px;
+}
 
-@media (max-width: 500px) {
+/* Mobile layout */
+@media (max-width: 600px) {
 
     .game-header h1 {
-        font-size: 30px;
+        font-size: 29px;
     }
 
     .game-panel {
-        padding: 20px;
+        padding: 18px 12px;
+    }
+
+    .game-container {
+        gap: 8px;
     }
 
     .cell {
-        font-size: 48px;
+        font-size: 45px;
+        border-radius: 10px;
     }
-}
-/* Highlight the winning combination */
-.cell.winning-cell {
-    background-color: #16a34a;
-    border-color: #22c55e;
-    color: white;
-    transform: scale(1.05);
-    transition: all 0.3s ease;
+
+    .scoreboard {
+        padding: 12px 5px;
+    }
+
+    .score h3 {
+        font-size: 12px;
+    }
+
+    .score p {
+        font-size: 24px;
+    }
 }
