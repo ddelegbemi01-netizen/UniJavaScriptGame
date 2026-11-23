@@ -1,18 +1,24 @@
 
 
 // GAME VARIABLES
-let xScore = 0;
-let oScore = 0;
-let drawScore = 0;
+
+// Load previously saved scores from localStorage
+let xScore = Number(localStorage.getItem("xScore")) || 0;
+let oScore = Number(localStorage.getItem("oScore")) || 0;
+let drawScore = Number(localStorage.getItem("drawScore")) || 0;
 
 const xScoreDisplay = document.getElementById("xScore");
 const oScoreDisplay = document.getElementById("oScore");
 const drawScoreDisplay = document.getElementById("drawScore");
 const gameModeSelect = document.getElementById("gameMode");
+const difficultySelect = document.getElementById("difficulty");
 
 const statusDisplay = document.getElementById("status");
 
 const restartButton = document.getElementById("restartButton");
+const winnerPopup = document.getElementById("winnerPopup");
+const winnerMessage = document.getElementById("winnerMessage");
+const playAgainButton = document.getElementById("playAgainButton");
 
 const cells = document.querySelectorAll(".cell");
 
@@ -115,8 +121,8 @@ function handleResultValidation() {
 
     if (roundWon) {
 
-        statusDisplay.textContent =
-            "Player " + currentPlayer + " has won!";
+        winnerMessage.textContent = "Player " + currentPlayer + " WON!";
+        winnerPopup.showModal();
 
         if (currentPlayer === "X") {
             xScore++;
@@ -125,6 +131,10 @@ function handleResultValidation() {
             oScore++;
             oScoreDisplay.textContent = oScore;
         }
+
+        // Save scores in the browser
+        localStorage.setItem("xScore", xScore);
+        localStorage.setItem("oScore", oScore);
 
         winningCombination.forEach(function (index) {
             cells[index].classList.add("winning-cell");
@@ -142,6 +152,9 @@ function handleResultValidation() {
 
         drawScore++;
         drawScoreDisplay.textContent = drawScore;
+
+        // Save draw score in the browser
+        localStorage.setItem("drawScore", drawScore);
 
         gameActive = false;
         return;
@@ -186,6 +199,22 @@ function handleRestartGame() {
 
 // COMPUTER PLAYER
 
+function handleEasyComputerMove() {
+    const availableCells = gameState
+        .map((value, index) => value === "" ? index : null)
+        .filter(index => index !== null);
+
+    if (availableCells.length === 0) {
+        return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * availableCells.length);
+    const chosenCell = availableCells[randomIndex];
+
+    handleCellPlayed(cells[chosenCell]);
+    handleResultValidation();
+}
+
 // INTELLIGENT COMPUTER PLAYER
 
 function handleComputerMove() {
@@ -194,6 +223,10 @@ function handleComputerMove() {
         return;
     }
 
+    if (difficultySelect.value === "easy") {
+        handleEasyComputerMove();
+        return;
+    }
     let computerMove = -1;
 
     // 1. Check whether the computer can win
@@ -322,6 +355,7 @@ function handleComputerMove() {
 
 // EVENT LISTENERS
 
+
 // Listen for clicks on the game board
 cells.forEach(function (cell) {
     cell.addEventListener("click", handleCellClick);
@@ -332,3 +366,10 @@ restartButton.addEventListener("click", handleRestartGame);
 
 // Reset the game when the game mode changes
 gameModeSelect.addEventListener("change", handleRestartGame);
+// CLOSE WINNER POPUP AND RESTART GAME
+
+playAgainButton.addEventListener("click", function () {
+    winnerPopup.close();
+    handleRestartGame();
+});
+

@@ -54,7 +54,14 @@
                 </select>
 
             </div>
-            
+            <div class="difficulty-selector">
+                <label for="difficulty">Computer Difficulty:</label>
+                <select id="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
 
             <div class="game-container">
 
@@ -79,6 +86,26 @@
             </div>
 
         </section>
+        <!-- WINNER POPUP -->
+        <dialog id="winnerPopup" class="winner-popup">
+
+            <div class="popup-content">
+
+                <div class="santa-icon">🎅</div>
+
+                <h2>HO HO HO!</h2>
+
+                <h3 id="winnerMessage">YOU WON!</h3>
+
+                <p>Santa is celebrating with you!</p>
+
+                <button id="playAgainButton">
+                    Play Again
+                </button>
+
+            </div>
+
+        </dialog>
 
         <footer>
             <p>Built with HTML, CSS and JavaScript</p>
