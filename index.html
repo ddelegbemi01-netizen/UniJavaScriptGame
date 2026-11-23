@@ -43,6 +43,28 @@
                 </div>
 
             </div>
+            <!-- TOURNAMENT SCOREBOARD -->
+            <div class="tournament-panel">
+                <h2>Best of 2 Tournament</h2>
+
+                <div class="tournament-scores">
+                    <div>
+                        <h3>Player X</h3>
+                        <p id="xTournamentScore">0</p>
+                    </div>
+
+                    <div>
+                        <h3>Player O</h3>
+                        <p id="oTournamentScore">0</p>
+                    </div>
+                </div>
+
+                <p id="tournamentStatus">
+                    First to 3 wins becomes champion!
+                </p>
+
+                <button id="newTournamentButton">New Tournament</button>
+            </div>
 
             <div class="game-mode">
 
@@ -106,7 +128,16 @@
             </div>
 
         </dialog>
-
+        <!-- TOURNAMENT CHAMPION POPUP -->
+        <dialog id="championPopup" class="winner-popup">
+            <div class="popup-content">
+                <div class="santa-icon">🎅</div>
+                <h2>HO HO HO!</h2>
+                <h3 id="championMessage">TOURNAMENT CHAMPION!</h3>
+                <p>What a fantastic Christmas victory!</p>
+                <button id="championNewTournament">Play Again</button>
+            </div>
+        </dialog>
         <footer>
             <p>Built with HTML, CSS and JavaScript</p>
         </footer>

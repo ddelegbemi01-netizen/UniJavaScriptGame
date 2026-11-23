@@ -361,3 +361,53 @@ footer {
         transform: translateY(8px);
     }
 }
+/* CHRISTMAS TOURNAMENT BUTTON */
+#newTournamentButton {
+    background: linear-gradient(135deg, #b5122b, #8b0000);
+    color: #ffffff;
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+    padding: 12px 22px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+    /* BUTTON HOVER EFFECT */
+    #newTournamentButton:hover {
+        background: linear-gradient(135deg, #176b3a, #064d27);
+        border-color: #ffd700;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    /* BUTTON CLICK EFFECT */
+    #newTournamentButton:active {
+        transform: translateY(1px);
+    }
+/* CHRISTMAS COMPUTER DIFFICULTY SELECTOR */
+#difficulty {
+    background: linear-gradient(135deg, #176b3a, #064d27);
+    color: #ffffff;
+    border: 2px solid #d4af37;
+    border-radius: 7px;
+    padding: 7px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+}
+
+    /* DIFFICULTY OPTIONS */
+    #difficulty option {
+        background-color: #123f2c;
+        color: #ffffff;
+    }
+
+    /* HOVER EFFECT */
+    #difficulty:hover {
+        border-color: #ffd700;
+        background: linear-gradient(135deg, #b5122b, #8b0000);
+    }

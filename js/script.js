@@ -7,6 +7,16 @@ let xScore = Number(localStorage.getItem("xScore")) || 0;
 let oScore = Number(localStorage.getItem("oScore")) || 0;
 let drawScore = Number(localStorage.getItem("drawScore")) || 0;
 
+// TOURNAMENT VARIABLES
+let xTournamentScore = 0;
+let oTournamentScore = 0;
+let tournamentActive = true;
+
+const xTournamentScoreDisplay = document.getElementById("xTournamentScore");
+const oTournamentScoreDisplay = document.getElementById("oTournamentScore");
+const tournamentStatus = document.getElementById("tournamentStatus");
+const newTournamentButton = document.getElementById("newTournamentButton");
+
 const xScoreDisplay = document.getElementById("xScore");
 const oScoreDisplay = document.getElementById("oScore");
 const drawScoreDisplay = document.getElementById("drawScore");
@@ -19,6 +29,11 @@ const restartButton = document.getElementById("restartButton");
 const winnerPopup = document.getElementById("winnerPopup");
 const winnerMessage = document.getElementById("winnerMessage");
 const playAgainButton = document.getElementById("playAgainButton");
+
+// TOURNAMENT CHAMPION POPUP
+const championPopup = document.getElementById("championPopup");
+const championMessage = document.getElementById("championMessage");
+const championNewTournament = document.getElementById("championNewTournament");
 
 const cells = document.querySelectorAll(".cell");
 
@@ -131,10 +146,35 @@ function handleResultValidation() {
             oScore++;
             oScoreDisplay.textContent = oScore;
         }
+        // UPDATE TOURNAMENT SCORE
+        if (tournamentActive) {
+            if (currentPlayer === "X") {
+                xTournamentScore++;
+                xTournamentScoreDisplay.textContent = xTournamentScore;
+            } else {
+                oTournamentScore++;
+                oTournamentScoreDisplay.textContent = oTournamentScore;
+            }
 
-        // Save scores in the browser
+            // CHECK IF A PLAYER HAS WON THE TOURNAMENT
+            if (xTournamentScore === 2 || oTournamentScore === 2) {
+                tournamentActive = false;
+
+                const champion = xTournamentScore === 2 ? "Player X" : "Player O";
+                championMessage.textContent = champion + " IS THE CHAMPION!";
+                championPopup.showModal();
+            } else {
+                tournamentStatus.textContent =
+                    "Tournament progress: X " + xTournamentScore +
+                    " - " + oTournamentScore + " O";
+            }
+        }
+        // Save scores in the browser`
         localStorage.setItem("xScore", xScore);
         localStorage.setItem("oScore", oScore);
+        localStorage.setItem("drawScore", drawScore);
+        localStorage.setItem("xTournamentScore", xTournamentScore);
+        localStorage.setItem("oTournamentScore", oTournamentScore);
 
         winningCombination.forEach(function (index) {
             cells[index].classList.add("winning-cell");
@@ -211,7 +251,7 @@ function handleEasyComputerMove() {
     const randomIndex = Math.floor(Math.random() * availableCells.length);
     const chosenCell = availableCells[randomIndex];
 
-    handleCellPlayed(cells[chosenCell]);
+    handleCellPlayed(cells[chosenCell], chosenCell);
     handleResultValidation();
 }
 
@@ -228,6 +268,33 @@ function handleComputerMove() {
         return;
     }
     let computerMove = -1;
+
+    if (difficultySelect.value === "hard") {
+        let bestScore = -Infinity;
+        let bestMove = -1;
+
+        for (let i = 0; i < gameState.length; i++) {
+            if (gameState[i] === "") {
+                gameState[i] = "O";
+
+                const score = minimax(gameState, 0, false);
+
+                gameState[i] = "";
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMove = i;
+                }
+            }
+        }
+
+        if (bestMove !== -1) {
+            handleCellPlayed(cells[bestMove], bestMove);
+            handleResultValidation();
+        }
+
+        return;
+    }
 
     // 1. Check whether the computer can win
     for (let condition of winningConditions) {
@@ -352,7 +419,79 @@ function handleComputerMove() {
 
     }
 }
+// MINIMAX ALGORITHM – HARD DIFFICULTY
 
+function minimax(board, depth, isMaximizing) {
+
+    // Check if the computer has won
+    if (checkWinner(board, "O")) {
+        return 10 - depth;
+    }
+
+    // Check if the human player has won
+    if (checkWinner(board, "X")) {
+        return depth - 10;
+    }
+
+    // Check for a draw
+    if (!board.includes("")) {
+        return 0;
+    }
+
+    if (isMaximizing) {
+
+        let bestScore = -Infinity;
+
+        for (let i = 0; i < board.length; i++) {
+
+            if (board[i] === "") {
+
+                board[i] = "O";
+
+                let score = minimax(board, depth + 1, false);
+
+                board[i] = "";
+
+                bestScore = Math.max(score, bestScore);
+            }
+        }
+
+        return bestScore;
+
+    } else {
+
+        let bestScore = Infinity;
+
+        for (let i = 0; i < board.length; i++) {
+
+            if (board[i] === "") {
+
+                board[i] = "X";
+
+                let score = minimax(board, depth + 1, true);
+
+                board[i] = "";
+
+                bestScore = Math.min(score, bestScore);
+            }
+        }
+
+        return bestScore;
+    }
+}
+
+
+// CHECK WHETHER A PLAYER HAS WON
+function checkWinner(board, player) {
+
+    return winningConditions.some(function (condition) {
+
+        return condition.every(function (index) {
+            return board[index] === player;
+        });
+
+    });
+}
 // EVENT LISTENERS
 
 
@@ -372,4 +511,37 @@ playAgainButton.addEventListener("click", function () {
     winnerPopup.close();
     handleRestartGame();
 });
+// START A NEW TOURNAMENT
+newTournamentButton.addEventListener("click", function () {
+    xTournamentScore = 0;
+    oTournamentScore = 0;
 
+    xTournamentScoreDisplay.textContent = 0;
+    oTournamentScoreDisplay.textContent = 0;
+
+    tournamentActive = true;
+
+    tournamentStatus.textContent = "First to 2 wins becomes champion!";
+
+    if (winnerPopup.open) {
+        winnerPopup.close();
+    }
+
+    handleRestartGame();
+});
+// CHAMPION POPUP PLAY AGAIN BUTTON
+championNewTournament.addEventListener("click", function () {
+    championPopup.close();
+
+    xTournamentScore = 0;
+    oTournamentScore = 0;
+
+    xTournamentScoreDisplay.textContent = 0;
+    oTournamentScoreDisplay.textContent = 0;
+
+    tournamentActive = true;
+
+    tournamentStatus.textContent = "First to 2 wins becomes champion!";
+
+    handleRestartGame();
+});
