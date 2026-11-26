@@ -1,13 +1,13 @@
 
 
-// GAME VARIABLES
+// These variables store the scores and the current game settings.
 
-// Load previously saved scores from localStorage
+// Load the scores saved in the browser, if there are any.
 let xScore = Number(localStorage.getItem("xScore")) || 0;
 let oScore = Number(localStorage.getItem("oScore")) || 0;
 let drawScore = Number(localStorage.getItem("drawScore")) || 0;
 
-// TOURNAMENT VARIABLES
+// These variables keep track of the tournament progress.
 let xTournamentScore = 0;
 let oTournamentScore = 0;
 let tournamentActive = true;
@@ -30,24 +30,41 @@ const winnerPopup = document.getElementById("winnerPopup");
 const winnerMessage = document.getElementById("winnerMessage");
 const playAgainButton = document.getElementById("playAgainButton");
 
-// TOURNAMENT CHAMPION POPUP
+// Get the elements used to show the tournament winner.
 const championPopup = document.getElementById("championPopup");
 const championMessage = document.getElementById("championMessage");
 const championNewTournament = document.getElementById("championNewTournament");
 
 const cells = document.querySelectorAll(".cell");
 
-// Represents the current state of the game board
+// This array stores the value in each square on the board.
 let gameState = ["", "", "", "", "", "", "", "", ""];
 
-// Player who starts the game
+// CHAMPION'S TWO-MOVE UNDO SYSTEM
+
+// Stores every move made during the current game
+let moveHistory = [];
+
+// Stores the previous tournament champion (X or O)
+let previousChampion = null;
+
+// Tracks whether the champion can still use their special ability
+let championUndoAvailable = false;
+
+// Identifies which player owns the undo ability
+let championPlayer = null;
+
+const championUndoButton = document.getElementById("championUndoButton");
+const undoStatus = document.getElementById("undoStatus");
+// X always starts a new game.
 let currentPlayer = "X";
 
-// Determines whether the game is active
+// This is false when the round has finished.
 let gameActive = true;
+let computerMoveTimeout = null;
 
 
-// WINNING COMBINATIONS
+// These are all the possible winning lines on the board.
 
 const winningConditions = [
     [0, 1, 2],
@@ -61,12 +78,15 @@ const winningConditions = [
 ];
 
 
-// INITIAL GAME MESSAGE
+// Show the message for the first player's turn.
 
 statusDisplay.textContent = "Player X's turn";
+xScoreDisplay.textContent = xScore;
+oScoreDisplay.textContent = oScore;
+drawScoreDisplay.textContent = drawScore;
 
 
-// HANDLE CELL CLICK
+// Handle a click on one of the game squares.
 
 function handleCellClick(event) {
 
@@ -76,8 +96,12 @@ function handleCellClick(event) {
         clickedCell.getAttribute("data-cell-index")
     );
 
-    // Prevent invalid moves
-    if (gameState[clickedCellIndex] !== "" || !gameActive) {
+    // Do not allow a used square or a finished game to be played.
+    if (
+        gameState[clickedCellIndex] !== "" ||
+        !gameActive ||
+        (gameModeSelect.value === "computer" && currentPlayer === "O")
+    ) {
         return;
     }
 
@@ -85,32 +109,38 @@ function handleCellClick(event) {
 
     handleResultValidation();
 
-    // Allow the computer to play if the game is still active
+    // Let the computer take its turn when the game is still running.
     if (
         gameActive &&
         gameModeSelect.value === "computer" &&
         currentPlayer === "O"
     ) {
-        setTimeout(handleComputerMove, 500);
+        computerMoveTimeout = setTimeout(handleComputerMove, 500);
     }
 }
 
-// UPDATE GAME BOARD
+// Put the current player's mark in the selected square.
 
 function handleCellPlayed(clickedCell, clickedCellIndex) {
 
-    // Update the JavaScript game state
+    // Save the move in the game state array.
     gameState[clickedCellIndex] = currentPlayer;
 
-    // Display the player's symbol
+    // Record the move for the champion's undo ability
+    moveHistory.push({
+        player: currentPlayer,
+        index: clickedCellIndex
+    });
+
+    // Show the player's mark on the page.
     clickedCell.textContent = currentPlayer;
 
-    // Apply the appropriate CSS class
+    // Add a class so the mark gets the correct colour.
     clickedCell.classList.add(currentPlayer.toLowerCase());
 }
 
 
-// CHECK FOR WIN OR DRAW
+// Check whether the round has been won or drawn.
 
 function handleResultValidation() {
     let roundWon = false;
@@ -146,7 +176,7 @@ function handleResultValidation() {
             oScore++;
             oScoreDisplay.textContent = oScore;
         }
-        // UPDATE TOURNAMENT SCORE
+        // Add this result to the tournament score.
         if (tournamentActive) {
             if (currentPlayer === "X") {
                 xTournamentScore++;
@@ -156,11 +186,14 @@ function handleResultValidation() {
                 oTournamentScoreDisplay.textContent = oTournamentScore;
             }
 
-            // CHECK IF A PLAYER HAS WON THE TOURNAMENT
+            // Check whether this result has decided the tournament.
             if (xTournamentScore === 2 || oTournamentScore === 2) {
                 tournamentActive = false;
 
                 const champion = xTournamentScore === 2 ? "Player X" : "Player O";
+                // Remember the champion for the next tournament
+                previousChampion = xTournamentScore === 2 ? "X" : "O";
+
                 championMessage.textContent = champion + " IS THE CHAMPION!";
                 championPopup.showModal();
             } else {
@@ -169,7 +202,7 @@ function handleResultValidation() {
                     " - " + oTournamentScore + " O";
             }
         }
-        // Save scores in the browser`
+        // Save the updated scores in the browser.
         localStorage.setItem("xScore", xScore);
         localStorage.setItem("oScore", oScore);
         localStorage.setItem("drawScore", drawScore);
@@ -193,7 +226,7 @@ function handleResultValidation() {
         drawScore++;
         drawScoreDisplay.textContent = drawScore;
 
-        // Save draw score in the browser
+        // Save the updated draw score in the browser.
         localStorage.setItem("drawScore", drawScore);
 
         gameActive = false;
@@ -204,7 +237,7 @@ function handleResultValidation() {
 }
 
 
-// CHANGE ACTIVE PLAYER
+// Change to the other player's turn.
 
 function handlePlayerChange() {
 
@@ -215,9 +248,15 @@ function handlePlayerChange() {
 }
 
 
-// RESTART GAME
+// Reset the board without removing the scores.
 
 function handleRestartGame() {
+
+    clearTimeout(computerMoveTimeout);
+    computerMoveTimeout = null;
+
+    // Clear move history for the new game
+    moveHistory = [];
 
     gameState = ["", "", "", "", "", "", "", "", ""];
 
@@ -227,7 +266,7 @@ function handleRestartGame() {
 
     statusDisplay.textContent = "Player X's turn";
 
-    // Clear every cell
+    // Remove the marks and winning styles from every square.
     cells.forEach(function (cell) {
 
         cell.textContent = "";
@@ -236,8 +275,64 @@ function handleRestartGame() {
 
     });
 }
+// CHAMPION'S TWO-MOVE UNDO
+function handleChampionUndo() {
 
-// COMPUTER PLAYER
+    // Check that the ability is available
+    if (!championUndoAvailable || !gameActive) {
+        return;
+    }
+
+    // Two moves must exist to undo
+    if (moveHistory.length < 2) {
+        undoStatus.textContent =
+            "There are not enough moves to undo.";
+        return;
+    }
+
+    // Cancel any computer move that is waiting
+    clearTimeout(computerMoveTimeout);
+    computerMoveTimeout = null;
+
+    // Reverse the last two moves
+    const undoneMoves = moveHistory.splice(-2, 2);
+
+    undoneMoves.forEach(function (move) {
+        gameState[move.index] = "";
+        cells[move.index].textContent = "";
+
+        cells[move.index].classList.remove(
+            "x",
+            "o",
+            "winning-cell"
+        );
+    });
+
+    // Restore the player whose turn it was
+    currentPlayer = undoneMoves[0].player;
+
+    gameActive = true;
+
+    statusDisplay.textContent =
+        "Player " + currentPlayer + "'s turn";
+
+    // Use up the champion's ability
+    championUndoAvailable = false;
+    championUndoButton.disabled = true;
+
+    undoStatus.textContent =
+        "Player " + championPlayer +
+        " has used their Two-Move Undo!";
+
+    // Allow the computer to move if O is next
+    if (
+        gameModeSelect.value === "computer" &&
+        currentPlayer === "O"
+    ) {
+        computerMoveTimeout = setTimeout(handleComputerMove, 500);
+    }
+}
+// Make a random move for the easy computer level.
 
 function handleEasyComputerMove() {
     const availableCells = gameState
@@ -255,7 +350,7 @@ function handleEasyComputerMove() {
     handleResultValidation();
 }
 
-// INTELLIGENT COMPUTER PLAYER
+// Choose a move for the medium or hard computer level.
 
 function handleComputerMove() {
 
@@ -296,7 +391,7 @@ function handleComputerMove() {
         return;
     }
 
-    // 1. Check whether the computer can win
+    // First, check whether the computer can win this turn.
     for (let condition of winningConditions) {
 
         const [a, b, c] = condition;
@@ -329,7 +424,7 @@ function handleComputerMove() {
         }
     }
 
-    // 2. Block the human player from winning
+    // Next, block the human player if they are about to win.
     if (computerMove === -1) {
 
         for (let condition of winningConditions) {
@@ -365,12 +460,12 @@ function handleComputerMove() {
         }
     }
 
-    // 3. Take the centre square if available
+    // The centre is a useful move if it is still empty.
     if (computerMove === -1 && gameState[4] === "") {
         computerMove = 4;
     }
 
-    // 4. Choose an available corner
+    // If possible, choose one of the corner squares.
     if (computerMove === -1) {
 
         const corners = [0, 2, 6, 8];
@@ -388,7 +483,7 @@ function handleComputerMove() {
         }
     }
 
-    // 5. Choose any remaining available square
+    // Otherwise, choose any square that is still empty.
     if (computerMove === -1) {
 
         const availableCells = [];
@@ -410,7 +505,7 @@ function handleComputerMove() {
         }
     }
 
-    // Play the computer's move
+    // Display the computer's chosen move and check the result.
     if (computerMove !== -1) {
 
         handleCellPlayed(cells[computerMove], computerMove);
@@ -419,21 +514,21 @@ function handleComputerMove() {
 
     }
 }
-// MINIMAX ALGORITHM – HARD DIFFICULTY
+// Use minimax to choose the best move for hard difficulty.
 
 function minimax(board, depth, isMaximizing) {
 
-    // Check if the computer has won
+    // Return a positive score if the computer has won.
     if (checkWinner(board, "O")) {
         return 10 - depth;
     }
 
-    // Check if the human player has won
+    // Return a negative score if the human player has won.
     if (checkWinner(board, "X")) {
         return depth - 10;
     }
 
-    // Check for a draw
+    // Return zero when there are no moves left.
     if (!board.includes("")) {
         return 0;
     }
@@ -481,7 +576,7 @@ function minimax(board, depth, isMaximizing) {
 }
 
 
-// CHECK WHETHER A PLAYER HAS WON
+// Check whether a player has won the tournament.
 function checkWinner(board, player) {
 
     return winningConditions.some(function (condition) {
@@ -492,26 +587,26 @@ function checkWinner(board, player) {
 
     });
 }
-// EVENT LISTENERS
+// Connect the buttons and squares to their functions.
 
 
-// Listen for clicks on the game board
+// Run the move function when a square is clicked.
 cells.forEach(function (cell) {
     cell.addEventListener("click", handleCellClick);
 });
 
-// Listen for restart button clicks
+// Restart the game when the restart button is clicked.
 restartButton.addEventListener("click", handleRestartGame);
 
-// Reset the game when the game mode changes
+// Start a fresh round when the game mode changes.
 gameModeSelect.addEventListener("change", handleRestartGame);
-// CLOSE WINNER POPUP AND RESTART GAME
+// Close the winner message and start another round.
 
 playAgainButton.addEventListener("click", function () {
     winnerPopup.close();
     handleRestartGame();
 });
-// START A NEW TOURNAMENT
+// Reset the tournament and begin a new one.
 newTournamentButton.addEventListener("click", function () {
     xTournamentScore = 0;
     oTournamentScore = 0;
@@ -521,6 +616,20 @@ newTournamentButton.addEventListener("click", function () {
 
     tournamentActive = true;
 
+    // Activate the previous champion's special ability
+    if (previousChampion !== null) {
+        championPlayer = previousChampion;
+        championUndoAvailable = true;
+
+        undoStatus.textContent =
+            "Player " + championPlayer +
+            " has one Two-Move Undo available!";
+
+        championUndoButton.disabled = false;
+    } else {
+        championUndoButton.disabled = true;
+    }
+
     tournamentStatus.textContent = "First to 2 wins becomes champion!";
 
     if (winnerPopup.open) {
@@ -529,10 +638,13 @@ newTournamentButton.addEventListener("click", function () {
 
     handleRestartGame();
 });
-// CHAMPION POPUP PLAY AGAIN BUTTON
+// Start another tournament when the play again button is clicked.
 championNewTournament.addEventListener("click", function () {
     championPopup.close();
 
+    if (winnerPopup.open) {
+        winnerPopup.close();
+    }
     xTournamentScore = 0;
     oTournamentScore = 0;
 
@@ -541,7 +653,73 @@ championNewTournament.addEventListener("click", function () {
 
     tournamentActive = true;
 
+    // Activate the previous champion's special ability
+    if (previousChampion !== null) {
+        championPlayer = previousChampion;
+        championUndoAvailable = true;
+
+        undoStatus.textContent =
+            "Player " + championPlayer +
+            " has one Two-Move Undo available!";
+
+        championUndoButton.disabled = false;
+    } else {
+        undoStatus.textContent =
+            "The champion's special ability will appear here.";
+
+        championUndoButton.disabled = true;
+    }
+
     tournamentStatus.textContent = "First to 2 wins becomes champion!";
 
+
     handleRestartGame();
+});
+// CHAMPION'S UNDO BUTTON
+championUndoButton.addEventListener("click", handleChampionUndo);
+// Reset the lifetime scoreboard.
+document.getElementById("resetScoreboardButton")
+    .addEventListener("click", function () {
+
+        const confirmReset = confirm(
+            "Are you sure you want to reset the lifetime scoreboard?"
+        );
+
+        if (!confirmReset) {
+            return;
+        }
+
+        xScore = 0;
+        oScore = 0;
+        drawScore = 0;
+
+        localStorage.setItem("xScore", xScore);
+        localStorage.setItem("oScore", oScore);
+        localStorage.setItem("drawScore", drawScore);
+
+        document.getElementById("xScore").textContent = xScore;
+        document.getElementById("oScore").textContent = oScore;
+        document.getElementById("drawScore").textContent = drawScore;
+    });
+// GAME RULES POPUP
+
+const rulesPopup = document.getElementById("rulesPopup");
+const rulesButton = document.getElementById("rulesButton");
+const closeRulesButton = document.getElementById("closeRulesButton");
+
+// Show the rules automatically on the first visit.
+if (localStorage.getItem("rulesSeen") !== "true") {
+    rulesPopup.showModal();
+
+    localStorage.setItem("rulesSeen", "true");
+}
+
+// Open the rules when the Rules button is clicked.
+rulesButton.addEventListener("click", function () {
+    rulesPopup.showModal();
+});
+
+// Close the rules when Start Playing is clicked.
+closeRulesButton.addEventListener("click", function () {
+    rulesPopup.close();
 });

@@ -23,8 +23,8 @@
 
             <div class="game-info">
                 <h2 id="status">Player X's turn</h2>
-            </div>
 
+            </div>
             <div class="scoreboard">
 
                 <div class="score">
@@ -43,7 +43,8 @@
                 </div>
 
             </div>
-            <!-- TOURNAMENT SCOREBOARD -->
+            <button id="resetScoreboardButton">Reset Scoreboard</button>
+            <!-- This section displays the tournament scores. -->
             <div class="tournament-panel">
                 <h2>Best of 2 Tournament</h2>
 
@@ -59,9 +60,11 @@
                     </div>
                 </div>
 
-                <p id="tournamentStatus">
-                    First to 3 wins becomes champion!
-                </p>
+                <p id="tournamentStatus">First to 2 wins becomes champion!</p>
+
+                <!-- Champion's special ability -->
+                <p id="undoStatus">The champion's special ability will appear here.</p>
+                <button id="championUndoButton" disabled>Undo Last Two Moves</button>
 
                 <button id="newTournamentButton">New Tournament</button>
             </div>
@@ -105,10 +108,14 @@
                 <button id="restartButton">
                     Restart Game
                 </button>
+                <button id="rulesButton">
+                     Game Rules
+                </button>
             </div>
 
+
         </section>
-        <!-- WINNER POPUP -->
+        <!-- This popup displays the winner of the current round. -->
         <dialog id="winnerPopup" class="winner-popup">
 
             <div class="popup-content">
@@ -128,7 +135,7 @@
             </div>
 
         </dialog>
-        <!-- TOURNAMENT CHAMPION POPUP -->
+        <!-- This popup displays the tournament champion. -->
         <dialog id="championPopup" class="winner-popup">
             <div class="popup-content">
                 <div class="santa-icon">🎅</div>
@@ -137,6 +144,58 @@
                 <p>What a fantastic Christmas victory!</p>
                 <button id="championNewTournament">Play Again</button>
             </div>
+        </dialog>
+
+        <!-- Game rules popup -->
+        <dialog id="rulesPopup" class="rules-popup">
+
+            <div class="rules-content">
+
+                <h2>🎄 How to Play 🎄</h2>
+
+                <h3>1. Basic Rules</h3>
+                <ul>
+                    <li>The game is played on a 3 × 3 grid.</li>
+                    <li>Player X takes the first turn.</li>
+                    <li>Players take turns placing X or O.</li>
+                    <li>Get three matching symbols in a row, column or diagonal to win.</li>
+                    <li>If all nine squares are filled without a winner, the game is a draw.</li>
+                </ul>
+
+                <h3>2. Game Modes</h3>
+                <ul>
+                    <li><strong>Two Players:</strong> Play against another person.</li>
+                    <li><strong>Play Against Computer:</strong> Challenge the computer.</li>
+                    <li><strong>Easy:</strong> The computer makes random moves.</li>
+                    <li><strong>Medium:</strong> The computer uses strategic moves.</li>
+                    <li><strong>Hard:</strong> The computer uses advanced Minimax decision-making.</li>
+                </ul>
+
+                <h3>3. Best of 2 Tournament</h3>
+                <ul>
+                    <li>The first player to win two rounds becomes champion.</li>
+                    <li>Tournament scores track progress towards the championship.</li>
+                    <li>Select New Tournament to begin a fresh competition.</li>
+                </ul>
+
+                <h3>4. Champion's Two-Move Undo</h3>
+                <ul>
+                    <li>The previous tournament champion receives one special Undo ability in the next tournament.</li>
+                    <li>It removes the last two moves from the current game.</li>
+                    <li>The ability can only be used once per tournament.</li>
+                </ul>
+
+                <h3>5. Game Controls</h3>
+                <ul>
+                    <li><strong>Restart Game:</strong> Restart the current round.</li>
+                    <li><strong>Reset Scoreboard:</strong> Clear lifetime wins and draws.</li>
+                    <li><strong>New Tournament:</strong> Start a new tournament.</li>
+                </ul>
+
+                <button id="closeRulesButton">Start Playing 🎅</button>
+
+            </div>
+
         </dialog>
         <footer>
             <p>Built with HTML, CSS and JavaScript</p>

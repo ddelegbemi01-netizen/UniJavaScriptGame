@@ -1,8 +1,6 @@
-/* =====================================
-   CHRISTMAS NOUGHTS AND CROSSES
-===================================== */
+/* Styles for the Christmas noughts and crosses game. */
 
-/* Main page */
+/* Set the basic page layout and colours. */
 * {
     box-sizing: border-box;
 }
@@ -15,19 +13,20 @@ body {
     background: radial-gradient(circle at 15% 20%, #24543e 0%, transparent 35%), radial-gradient(circle at 85% 80%, #641e2b 0%, transparent 35%), linear-gradient(135deg, #071f18, #102d23 50%, #081b16);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     padding: 35px 15px;
 }
 
-/* Main wrapper */
+/* Centre the game and limit its width. */
 .game-wrapper {
     width: 100%;
     max-width: 750px;
     text-align: center;
     position: relative;
+    margin: 0 auto;
 }
 
-/* Christmas heading */
+/* Style the title and description at the top. */
 .game-header {
     margin-bottom: 28px;
 }
@@ -54,7 +53,7 @@ body {
         letter-spacing: 1px;
     }
 
-/* Main game panel */
+/* Style the panel containing the game controls and board. */
 .game-panel {
     background: linear-gradient(145deg, #4a1925, #30121d);
     border: 2px solid #c9a34e;
@@ -63,7 +62,7 @@ body {
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.45), inset 0 0 25px rgba(255, 215, 120, 0.05);
 }
 
-/* Game status */
+/* Style the message showing whose turn it is. */
 .game-info h2 {
     color: #f6d77a;
     font-size: 23px;
@@ -71,7 +70,7 @@ body {
     margin-bottom: 20px;
 }
 
-/* Scoreboard */
+/* Arrange the player and draw scores in a row. */
 .scoreboard {
     display: flex;
     justify-content: space-around;
@@ -102,7 +101,7 @@ body {
         margin: 0;
     }
 
-/* Game mode selector */
+/* Style the game mode drop-down list. */
 .game-mode {
     margin: 22px 0;
 }
@@ -124,7 +123,7 @@ body {
         cursor: pointer;
     }
 
-/* Game board */
+/* Create the three-by-three game board. */
 .game-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -133,7 +132,7 @@ body {
     margin: 25px auto;
 }
 
-/* Individual cells */
+/* Style each clickable square. */
 .cell {
     aspect-ratio: 1 / 1;
     background: linear-gradient(145deg, #214b39, #153728);
@@ -155,19 +154,19 @@ body {
         transform: translateY(-3px);
     }
 
-    /* Player X */
+    /* Use red for player X. */
     .cell.x {
         color: #e85d67;
         text-shadow: 0 0 15px rgba(232, 93, 103, 0.4);
     }
 
-    /* Player O */
+    /* Use blue for player O. */
     .cell.o {
         color: #8bd8f2;
         text-shadow: 0 0 15px rgba(139, 216, 242, 0.4);
     }
 
-    /* Winning squares */
+    /* Highlight the squares in the winning line. */
     .cell.winning-cell {
         background: linear-gradient(145deg, #d6ad4d, #987329);
         border-color: #ffe49a;
@@ -176,7 +175,7 @@ body {
         box-shadow: 0 0 22px rgba(246, 215, 122, 0.55);
     }
 
-/* Restart button */
+/* Style the button used to restart the round. */
 .game-controls {
     margin-top: 25px;
 }
@@ -200,14 +199,14 @@ body {
         box-shadow: 0 8px 20px rgba(246, 215, 122, 0.2);
     }
 
-/* Footer */
+/* Style the small footer message. */
 footer {
     margin-top: 25px;
     color: #c7d9c9;
     font-size: 13px;
 }
 
-/* Snowfall decoration */
+/* Add decorative snowflakes above the game. */
 .game-wrapper::before {
     content: "❄  ✦  ❄  ✧  ❄  ✦  ❄";
     display: block;
@@ -217,7 +216,7 @@ footer {
     margin-bottom: 15px;
 }
 
-/* Mobile layout */
+/* Adjust the layout for smaller screens. */
 @media (max-width: 600px) {
 
     .game-header h1 {
@@ -249,7 +248,7 @@ footer {
         font-size: 24px;
     }
 }
-/* SANTA WINNER POPUP */
+/* Style the popup shown after a player wins. */
 
 .winner-popup {
     border: 3px solid #d6ad4d;
@@ -314,7 +313,7 @@ footer {
         transform: scale(1.05);
     }
 
-/* SNOWFLAKES and santa */
+/* Add snowflake decorations to the winner popup. */
 
 .winner-popup::before {
     content: "❄  ❅  ❄  ❅  ❄  ❅  ❄";
@@ -361,7 +360,7 @@ footer {
         transform: translateY(8px);
     }
 }
-/* CHRISTMAS TOURNAMENT BUTTON */
+/* Style the button used to start a tournament. */
 #newTournamentButton {
     background: linear-gradient(135deg, #b5122b, #8b0000);
     color: #ffffff;
@@ -375,7 +374,7 @@ footer {
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
 
-    /* BUTTON HOVER EFFECT */
+    /* Change the button when the mouse is over it. */
     #newTournamentButton:hover {
         background: linear-gradient(135deg, #176b3a, #064d27);
         border-color: #ffd700;
@@ -383,11 +382,11 @@ footer {
         box-shadow: 0 5px 12px rgba(0, 0, 0, 0.4);
     }
 
-    /* BUTTON CLICK EFFECT */
+    /* Move the button slightly when it is pressed. */
     #newTournamentButton:active {
         transform: translateY(1px);
     }
-/* CHRISTMAS COMPUTER DIFFICULTY SELECTOR */
+/* Style the computer difficulty selector. */
 #difficulty {
     background: linear-gradient(135deg, #176b3a, #064d27);
     color: #ffffff;
@@ -400,14 +399,258 @@ footer {
     outline: none;
 }
 
-    /* DIFFICULTY OPTIONS */
+    /* Style the options inside the difficulty list. */
     #difficulty option {
         background-color: #123f2c;
         color: #ffffff;
     }
 
-    /* HOVER EFFECT */
+    /* Change the selector when the mouse is over it. */
     #difficulty:hover {
         border-color: #ffd700;
         background: linear-gradient(135deg, #b5122b, #8b0000);
+    }
+/* Style the Champion's Two-Move Undo button. */
+#championUndoButton {
+    background: linear-gradient(135deg, #176b3a, #064d27);
+    color: #ffffff;
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+    padding: 12px 22px;
+    font-size: 15px;
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+    #championUndoButton:hover:not(:disabled) {
+        background: linear-gradient(135deg, #b5122b, #8b0000);
+        border-color: #ffd700;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    #championUndoButton:active:not(:disabled) {
+        transform: translateY(1px);
+    }
+
+    #championUndoButton:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+/* Style the Champion popup's Play Again button. */
+#championNewTournament {
+    background: linear-gradient(135deg, #176b3a, #064d27);
+    color: #ffffff;
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+    padding: 12px 22px;
+    font-size: 15px;
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+    #championNewTournament:hover {
+        background: linear-gradient(135deg, #b5122b, #8b0000);
+        border-color: #ffd700;
+        transform: translateY(-2px);
+    }
+/* Compact tournament section. */
+.tournament-panel {
+    background: rgba(23, 56, 43, 0.65);
+    border: 1px solid #c9a34e;
+    border-radius: 14px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+    .tournament-panel > h2 {
+        color: #f6d77a;
+        font-size: 20px;
+        margin: 0 0 12px;
+    }
+
+.tournament-scores {
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+    margin: 10px 0;
+}
+
+    .tournament-scores h3 {
+        color: #f6d77a;
+        font-size: 14px;
+        margin: 0 0 5px;
+    }
+
+    .tournament-scores p {
+        font-size: 22px;
+        font-weight: bold;
+        margin: 0;
+    }
+
+#tournamentStatus,
+#undoStatus {
+    font-size: 14px;
+    margin: 8px 0;
+}
+
+#undoStatus {
+    color: #f6d77a;
+}
+
+#championUndoButton,
+#newTournamentButton {
+    margin: 5px 3px;
+}
+
+/* Keep tournament controls tidy on mobile. */
+@media (max-width: 600px) {
+    .tournament-panel {
+        padding: 12px 8px;
+    }
+
+        .tournament-panel > h2 {
+            font-size: 18px;
+        }
+
+    .tournament-scores {
+        gap: 25px;
+    }
+
+    #championUndoButton,
+    #newTournamentButton {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+}
+/* Style the Reset Scoreboard button. */
+#resetScoreboardButton {
+    background: linear-gradient(135deg, #b5122b, #8b0000);
+    color: white;
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+}
+
+    #resetScoreboardButton:hover {
+        background: linear-gradient(135deg, #176b3a, #064d27);
+        border-color: #ffd700;
+        transform: translateY(-2px);
+    }
+/* Game rules popup */
+.rules-popup {
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: linear-gradient(145deg, #4a1925, #17382b);
+    color: #fff8e7;
+    border: 3px solid #d6ad4d;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 0 30px rgba(214, 173, 77, 0.5);
+}
+
+    .rules-popup::backdrop {
+        background: rgba(0, 0, 0, 0.8);
+    }
+
+.rules-content {
+    text-align: left;
+}
+
+    .rules-content h2 {
+        text-align: center;
+        color: #f6d77a;
+        font-size: 26px;
+        margin-top: 0;
+    }
+
+    .rules-content h3 {
+        color: #f6d77a;
+        margin-bottom: 5px;
+    }
+
+    .rules-content ul {
+        padding-left: 22px;
+        line-height: 1.6;
+    }
+
+    .rules-content li {
+        margin-bottom: 5px;
+    }
+
+#rulesButton,
+#closeRulesButton {
+    background: linear-gradient(135deg, #176b3a, #064d27);
+    color: white;
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    #rulesButton:hover,
+    #closeRulesButton:hover {
+        background: linear-gradient(135deg, #b5122b, #8b0000);
+        border-color: #ffd700;
+    }
+
+#closeRulesButton {
+    display: block;
+    margin: 20px auto 0;
+    padding: 12px 25px;
+}
+
+.game-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+    .rules-popup {
+        padding: 18px;
+    }
+
+    .rules-content h2 {
+        font-size: 22px;
+    }
+}
+/* Position the Rules button below Restart Game. */
+#rulesButton {
+    display: block;
+    margin: 12px auto;
+    background: linear-gradient(135deg, #176b3a, #064d27);
+    color: white;
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+    padding: 9px 20px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    #rulesButton:hover {
+        background: linear-gradient(135deg, #b5122b, #8b0000);
+        border-color: #ffd700;
+        transform: translateY(-2px);
     }
