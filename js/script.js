@@ -8,9 +8,9 @@ let oScore = Number(localStorage.getItem("oScore")) || 0;
 let drawScore = Number(localStorage.getItem("drawScore")) || 0;
 
 // These variables keep track of the tournament progress.
-let xTournamentScore = 0;
-let oTournamentScore = 0;
-let tournamentActive = true;
+let xTournamentScore = Number(localStorage.getItem("xTournamentScore")) || 0;
+let oTournamentScore = Number(localStorage.getItem("oTournamentScore")) || 0;
+let tournamentActive = xTournamentScore < 2 && oTournamentScore < 2;
 
 const xTournamentScoreDisplay = document.getElementById("xTournamentScore");
 const oTournamentScoreDisplay = document.getElementById("oTournamentScore");
@@ -46,7 +46,14 @@ let gameState = ["", "", "", "", "", "", "", "", ""];
 let moveHistory = [];
 
 // Stores the previous tournament champion (X or O)
-let previousChampion = null;
+const savedChampion = localStorage.getItem("previousChampion");
+let previousChampion = savedChampion === "X" || savedChampion === "O"
+    ? savedChampion
+    : null;
+
+if (previousChampion === null && !tournamentActive) {
+    previousChampion = xTournamentScore === 2 ? "X" : "O";
+}
 
 // Tracks whether the champion can still use their special ability
 let championUndoAvailable = false;
@@ -56,6 +63,16 @@ let championPlayer = null;
 
 const championUndoButton = document.getElementById("championUndoButton");
 const undoStatus = document.getElementById("undoStatus");
+
+function saveTournamentState() {
+    localStorage.setItem("xTournamentScore", xTournamentScore);
+    localStorage.setItem("oTournamentScore", oTournamentScore);
+
+    if (previousChampion !== null) {
+        localStorage.setItem("previousChampion", previousChampion);
+    }
+}
+
 // X always starts a new game.
 let currentPlayer = "X";
 
@@ -84,6 +101,17 @@ statusDisplay.textContent = "Player X's turn";
 xScoreDisplay.textContent = xScore;
 oScoreDisplay.textContent = oScore;
 drawScoreDisplay.textContent = drawScore;
+xTournamentScoreDisplay.textContent = xTournamentScore;
+oTournamentScoreDisplay.textContent = oTournamentScore;
+
+if (!tournamentActive) {
+    tournamentStatus.textContent =
+        "Tournament complete: Player " + previousChampion + " is champion.";
+} else if (xTournamentScore > 0 || oTournamentScore > 0) {
+    tournamentStatus.textContent =
+        "Tournament progress: X " + xTournamentScore +
+        " - " + oTournamentScore + " O";
+}
 
 
 // Handle a click on one of the game squares.
@@ -134,6 +162,11 @@ function handleCellPlayed(clickedCell, clickedCellIndex) {
 
     // Show the player's mark on the page.
     clickedCell.textContent = currentPlayer;
+    clickedCell.setAttribute(
+        "aria-label",
+        "Player " + currentPlayer + " played in board square " +
+        (clickedCellIndex + 1)
+    );
 
     // Add a class so the mark gets the correct colour.
     clickedCell.classList.add(currentPlayer.toLowerCase());
@@ -193,9 +226,12 @@ function handleResultValidation() {
                 const champion = xTournamentScore === 2 ? "Player X" : "Player O";
                 // Remember the champion for the next tournament
                 previousChampion = xTournamentScore === 2 ? "X" : "O";
+                localStorage.setItem("previousChampion", previousChampion);
 
                 championMessage.textContent = champion + " IS THE CHAMPION!";
                 championPopup.showModal();
+                tournamentStatus.textContent =
+                    champion + " wins the tournament!";
             } else {
                 tournamentStatus.textContent =
                     "Tournament progress: X " + xTournamentScore +
@@ -206,8 +242,7 @@ function handleResultValidation() {
         localStorage.setItem("xScore", xScore);
         localStorage.setItem("oScore", oScore);
         localStorage.setItem("drawScore", drawScore);
-        localStorage.setItem("xTournamentScore", xTournamentScore);
-        localStorage.setItem("oTournamentScore", oTournamentScore);
+        saveTournamentState();
 
         winningCombination.forEach(function (index) {
             cells[index].classList.add("winning-cell");
@@ -270,6 +305,11 @@ function handleRestartGame() {
     cells.forEach(function (cell) {
 
         cell.textContent = "";
+        cell.setAttribute(
+            "aria-label",
+            "Empty board square " +
+            (Number(cell.getAttribute("data-cell-index")) + 1)
+        );
 
         cell.classList.remove("x", "o", "winning-cell");
 
@@ -279,7 +319,7 @@ function handleRestartGame() {
 function handleChampionUndo() {
 
     // Check that the ability is available
-    if (!championUndoAvailable || !gameActive) {
+    if (!championUndoAvailable || !gameActive || championPlayer === null) {
         return;
     }
 
@@ -300,6 +340,10 @@ function handleChampionUndo() {
     undoneMoves.forEach(function (move) {
         gameState[move.index] = "";
         cells[move.index].textContent = "";
+        cells[move.index].setAttribute(
+            "aria-label",
+            "Empty board square " + (move.index + 1)
+        );
 
         cells[move.index].classList.remove(
             "x",
@@ -319,6 +363,7 @@ function handleChampionUndo() {
     // Use up the champion's ability
     championUndoAvailable = false;
     championUndoButton.disabled = true;
+    championUndoButton.textContent = "Undo Last Two Moves";
 
     undoStatus.textContent =
         "Player " + championPlayer +
@@ -576,7 +621,7 @@ function minimax(board, depth, isMaximizing) {
 }
 
 
-// Check whether a player has won the tournament.
+// Check whether a player has completed a winning line.
 function checkWinner(board, player) {
 
     return winningConditions.some(function (condition) {
@@ -626,11 +671,15 @@ newTournamentButton.addEventListener("click", function () {
             " has one Two-Move Undo available!";
 
         championUndoButton.disabled = false;
+        championUndoButton.textContent =
+            "Player " + championPlayer + ": Undo Last Two Moves";
     } else {
         championUndoButton.disabled = true;
+        championUndoButton.textContent = "Undo Last Two Moves";
     }
 
     tournamentStatus.textContent = "First to 2 wins becomes champion!";
+    saveTournamentState();
 
     if (winnerPopup.open) {
         winnerPopup.close();
@@ -663,14 +712,18 @@ championNewTournament.addEventListener("click", function () {
             " has one Two-Move Undo available!";
 
         championUndoButton.disabled = false;
+        championUndoButton.textContent =
+            "Player " + championPlayer + ": Undo Last Two Moves";
     } else {
         undoStatus.textContent =
             "The champion's special ability will appear here.";
 
         championUndoButton.disabled = true;
+        championUndoButton.textContent = "Undo Last Two Moves";
     }
 
     tournamentStatus.textContent = "First to 2 wins becomes champion!";
+    saveTournamentState();
 
 
     handleRestartGame();
@@ -710,6 +763,7 @@ const closeRulesButton = document.getElementById("closeRulesButton");
 // Show the rules automatically on the first visit.
 if (localStorage.getItem("rulesSeen") !== "true") {
     rulesPopup.showModal();
+    rulesPopup.scrollTop = 0;
 
     localStorage.setItem("rulesSeen", "true");
 }
@@ -717,6 +771,7 @@ if (localStorage.getItem("rulesSeen") !== "true") {
 // Open the rules when the Rules button is clicked.
 rulesButton.addEventListener("click", function () {
     rulesPopup.showModal();
+    rulesPopup.scrollTop = 0;
 });
 
 // Close the rules when Start Playing is clicked.

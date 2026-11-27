@@ -146,12 +146,21 @@ body {
     cursor: pointer;
     transition: all 0.25s ease;
     color: white;
+    font-family: inherit;
+    padding: 0;
 }
 
     .cell:hover {
         background: #315e46;
         border-color: #f6d77a;
         transform: translateY(-3px);
+    }
+
+    .cell:focus-visible,
+    button:focus-visible,
+    select:focus-visible {
+        outline: 3px solid #ffffff;
+        outline-offset: 3px;
     }
 
     /* Use red for player X. */

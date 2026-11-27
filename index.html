@@ -22,7 +22,7 @@
         <section class="game-panel">
 
             <div class="game-info">
-                <h2 id="status">Player X's turn</h2>
+                <h2 id="status" aria-live="polite">Player X's turn</h2>
 
             </div>
             <div class="scoreboard">
@@ -60,11 +60,11 @@
                     </div>
                 </div>
 
-                <p id="tournamentStatus">First to 2 wins becomes champion!</p>
+                <p id="tournamentStatus" aria-live="polite">First to 2 wins becomes champion!</p>
 
                 <!-- Champion's special ability -->
-                <p id="undoStatus">The champion's special ability will appear here.</p>
-                <button id="championUndoButton" disabled>Undo Last Two Moves</button>
+                <p id="undoStatus" aria-live="polite">The champion's special ability will appear here.</p>
+                <button id="championUndoButton" type="button" disabled>Undo Last Two Moves</button>
 
                 <button id="newTournamentButton">New Tournament</button>
             </div>
@@ -90,17 +90,17 @@
 
             <div class="game-container">
 
-                <div class="cell" data-cell-index="0"></div>
-                <div class="cell" data-cell-index="1"></div>
-                <div class="cell" data-cell-index="2"></div>
+                <button class="cell" type="button" data-cell-index="0" aria-label="Empty board square 1"></button>
+                <button class="cell" type="button" data-cell-index="1" aria-label="Empty board square 2"></button>
+                <button class="cell" type="button" data-cell-index="2" aria-label="Empty board square 3"></button>
 
-                <div class="cell" data-cell-index="3"></div>
-                <div class="cell" data-cell-index="4"></div>
-                <div class="cell" data-cell-index="5"></div>
+                <button class="cell" type="button" data-cell-index="3" aria-label="Empty board square 4"></button>
+                <button class="cell" type="button" data-cell-index="4" aria-label="Empty board square 5"></button>
+                <button class="cell" type="button" data-cell-index="5" aria-label="Empty board square 6"></button>
 
-                <div class="cell" data-cell-index="6"></div>
-                <div class="cell" data-cell-index="7"></div>
-                <div class="cell" data-cell-index="8"></div>
+                <button class="cell" type="button" data-cell-index="6" aria-label="Empty board square 7"></button>
+                <button class="cell" type="button" data-cell-index="7" aria-label="Empty board square 8"></button>
+                <button class="cell" type="button" data-cell-index="8" aria-label="Empty board square 9"></button>
 
             </div>
 
